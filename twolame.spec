@@ -1,6 +1,6 @@
 Name:		twolame
 Version:	0.3.12
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	TwoLAME is an optimised MPEG Audio Layer 2 encoding library based on tooLAME
 Group:		Applications/Multimedia
 License:	LGPLv2+
@@ -8,7 +8,7 @@ URL:		http://www.twolame.org/
 Source:		http://downloads.sourceforge.net/twolame/%{name}-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	libsndfile-devel
-BuildRequires:	libtool
+#BuildRequires:	libtool
 
 %description
 TwoLAME is an optimised MPEG Audio Layer 2 encoding library based on tooLAME,
@@ -53,8 +53,13 @@ done
 popd
 
 %build
-autoreconf -f -i
+#autoreconf -f -i
 %configure --disable-static
+
+# remove rpath from libtool
+sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
 %{__make} %{?_smp_mflags}
 
 %install
@@ -88,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/%{name}.h
 
 %changelog
+* Mon Aug 04 2008 kwizart < kwizart at gmail.com > - 0.3.12-3
+- Remove rpath with the "patch libtool" method instead of autoreconf
+
 * Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.3.12-2
 - rebuild
 
