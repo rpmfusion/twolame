@@ -1,12 +1,12 @@
 Name:		twolame
 Version:	0.3.13
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	TwoLAME is an optimised MPEG Audio Layer 2 encoding library based on tooLAME
 Group:		Applications/Multimedia
 License:	LGPLv2+
 URL:		http://www.twolame.org/
 Source:		http://downloads.sourceforge.net/twolame/%{name}-%{version}.tar.gz
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
 BuildRequires:	libsndfile-devel
 #BuildRequires:	libtool
 
@@ -17,7 +17,7 @@ which in turn is based heavily on
 - improvement to algorithms as part of the LAME project (www.sulaco.org/mp3)
 
 This package contains the command line frontend.
-                                                                                
+
 %package libs
 Summary:	TwoLAME is an optimised MPEG Audio Layer 2 encoding library based on tooLAME
 Group:		System Environment/Libraries
@@ -42,7 +42,7 @@ This package contains the header files and documentation
 needed to develop applications with TwoLAME.
 
 %prep
-%setup -q
+%autosetup
 # convert manpage to UTF8
 pushd doc
 iconv -f iso8859-1 -t utf8 %{name}.1 > %{name}.1.utf && mv %{name}.1.utf %{name}.1
@@ -60,39 +60,36 @@ popd
 sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-%{__make} %{?_smp_mflags}
+%make_build
 
 %install
-rm -rf $RPM_BUILD_ROOT
-%{__make} DESTDIR=$RPM_BUILD_ROOT install
-rm $RPM_BUILD_ROOT%{_libdir}/*.la
-rm -rf $RPM_BUILD_ROOT%{_docdir}
-
-%clean 
-rm -rf $RPM_BUILD_ROOT
+%make_install
+rm %{buildroot}%{_libdir}/*.la
+rm -rf %{buildroot}%{_docdir}
 
 %post libs -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
 
 %files
-%defattr(644,root,root,755)
-%doc AUTHORS COPYING ChangeLog README TODO
-%attr(755,root,root) %{_bindir}/%{name}
+%doc AUTHORS ChangeLog README TODO
+%license COPYING
+%{_bindir}/%{name}
 %{_mandir}/man1/%{name}.1*
 
 %files libs
-%defattr(-,root,root,-)
-%attr(755,root,root) %{_libdir}/lib%{name}.so.*
+%{_libdir}/lib%{name}.so.*
 
 %files devel
-%defattr(644,root,root,755)
 %doc doc/api.txt doc/html doc/psycho.txt doc/vbr.txt
 %{_libdir}/pkgconfig/%{name}.pc
 %{_libdir}/lib%{name}.so
 %{_includedir}/%{name}.h
 
 %changelog
+* Thu Aug 18 2016 Sérgio Basto <sergio@serjux.com> - 0.3.13-5
+- Clean spec, Vascom patches series, rfbz #4202, add license tag
+
 * Sun Aug 31 2014 Sérgio Basto <sergio@serjux.com> - 0.3.13-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
