@@ -1,6 +1,6 @@
 Name:		twolame
 Version:	0.3.13
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	TwoLAME is an optimised MPEG Audio Layer 2 encoding library based on tooLAME
 Group:		Applications/Multimedia
 License:	LGPLv2+
@@ -87,6 +87,9 @@ rm -rf %{buildroot}%{_docdir}
 %{_includedir}/%{name}.h
 
 %changelog
+* Mon Mar 20 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 0.3.13-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Thu Aug 18 2016 Sérgio Basto <sergio@serjux.com> - 0.3.13-5
 - Clean spec, Vascom patches series, rfbz #4202, add license tag
 
